@@ -65,7 +65,6 @@ int main()
     char buf[256];
 
     int users[64];      // Mang socket client da dang nhap
-    char *user_ids[64]; // Mang luu tru id cua client da dang nhap
     int num_users = 0;  // So client da dang nhap
 
     while (1)
@@ -106,7 +105,17 @@ int main()
                 ret = recv(fds[i].fd, buf, sizeof(buf), 0);
                 if (ret <= 0)
                 {
+                  
                     printf("Client %d disconnected.\n", fds[i].fd);
+                    
+                    for (int l = 0; l < num_users; l++)
+                    {
+                        if (users[l]==fds[i].fd){
+                            users[l]=0;
+                            num_users--;
+                        }
+                        /* code */
+                    }
                     close(fds[i].fd);
                     
                     // Xoa phan tu i khoi mang
@@ -115,8 +124,7 @@ int main()
                     }
                         nfds--;
                         i--;
-                        users[num_users]=0;
-                        num_users--;
+                     
                 }
                 else
                 {
@@ -151,8 +159,6 @@ int main()
                                 // Dang nhap thanh cong
                                 if (found){
                                     users[num_users]=client;
-                                    user_ids[num_users]= malloc(strlen(account)+1);
-                                    strcpy(user_ids[num_users],account);
                                     num_users++;
                                     char *msg = "Dang Nhap Thanh Cong\n";
                                     send(client, msg, strlen(msg), 0);

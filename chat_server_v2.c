@@ -65,7 +65,7 @@ int main()
             if (nfds < MAX_CLIENTS)
             {
                 printf("New client connected: %d\n", client);
-                 char *msg = "Enter the format 'client_id: client_name' to chat ";
+                 char *msg = "Enter the format 'client_id: client_name' to chat \n";
                 fds[nfds].fd = client;
                 fds[nfds].events = POLLIN;
                 send(fds[nfds].fd,msg,strlen(msg),0);
@@ -87,16 +87,25 @@ int main()
                 if (ret <= 0)
                 {
                     printf("Client %d disconnected.\n", fds[i].fd);
-                    close(fds[i].fd);
                     
+                    for (int l = 0; l < num_users; l++)
+                    {
+                        if (users[l]==fds[i].fd){
+                            users[l]=0;
+                            free(user_ids[l]);
+                            num_users--;
+                        }
+                        /* code */
+                    }
+                    close(fds[i].fd);
                     // Xoa phan tu i khoi mang
                     if (i < nfds - 1){
                         fds[i] = fds[nfds - 1];
                     }
                         nfds--;
                         i--;
-                    users[num_users]=0;
-                    num_users--;
+                    
+                    
                 }
                 else
                 {
@@ -160,22 +169,26 @@ int main()
                             // Kiem tra format [ten] msg
                             if (strchr(buf,'[')==buf && strchr(buf,']')>buf+1){
                             int ret1 = sscanf(buf,"%s%s",cmd,temp);
-                            printf("%s %s\n",cmd,temp);
+
                             if (ret1==2){
                                 
                                 // lay ten tu [ten] roi kiem tra
                                 sscanf(cmd,"[%[^]]]",name);
                                 strcpy(msg,strchr(buf,']')+1);
-                                printf("%s",msg);
-                                for (int k=0;k<num_users;k++){
-                                    if (strcmp(user_ids[k],name)==0){
-
+                                int n=0;
+                                for (;n<num_users;n++){
+                                    if (strcmp(user_ids[n],name)==0){
                                         sprintf(sendbuf, "[%s]: %s", user_ids[j], msg);
-                                        send(users[k], sendbuf, strlen(sendbuf), 0);
+                                        send(users[n], sendbuf, strlen(sendbuf), 0);
                                     }
                                 }
+                                // if (n==num_users) {
+                                // char *msg = "Khong ton tai nguoi nay\n";
+                                // send(client, msg, strlen(msg), 0);
+                                // // n=0;
+                                // }
                                 // printf("%s %s",cmd,msg);
-                                continue;
+                                break;
                             }
                             }
                             // if (strcmp(buf,"/name\n")==0){
