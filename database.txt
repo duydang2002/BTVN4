@@ -1,0 +1,4 @@
+admin admin
+guest nopass
+dnd 123456
+tbn 123456
