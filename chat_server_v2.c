@@ -182,21 +182,11 @@ int main()
                                         send(users[n], sendbuf, strlen(sendbuf), 0);
                                     }
                                 }
-                                // if (n==num_users) {
-                                // char *msg = "Khong ton tai nguoi nay\n";
-                                // send(client, msg, strlen(msg), 0);
-                                // // n=0;
-                                // }
-                                // printf("%s %s",cmd,msg);
+
                                 break;
                             }
                             }
-                            // if (strcmp(buf,"/name\n")==0){
-                            //   for (int k=0;k<num_users;k++){
-                            //     send(users[k], user_ids[k], strlen(user_ids[k]), 0);
-                            //   }
-                            //   continue;  
-                            // }
+
                             sprintf(sendbuf, "%s: %s", user_ids[j], buf);
                             for (int k = 0; k < num_users; k++)
                                 if (users[k] != client)
